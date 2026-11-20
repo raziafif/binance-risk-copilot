@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101512">
+  <title>Lookout | Portfolio & risk copilot</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Lookout home"><span class="brand-icon">L</span> lookout<span class="brand-dot">.</span></a>
+      <div class="workspace-label">YOUR WORKSPACE</div>
+      <nav aria-label="Dashboard sections">
+        <a class="nav-active" href="#overview"><span aria-hidden="true">&#9638;</span> Overview</a>
+        <a href="#holdings"><span aria-hidden="true">&#9673;</span> Holdings</a>
+        <a href="#risk"><span aria-hidden="true">&#9671;</span> Risk monitor</a>
+        <a href="#copilot"><span aria-hidden="true">&#10023;</span> Copilot</a>
+      </nav>
+      <div class="sidebar-note"><span class="shield" aria-hidden="true">&#9671;</span><strong>Observe. Never execute.</strong><p>Read-only by design. Your keys stay on your server.</p></div>
+      <div class="sidebar-bottom"><span class="status-dot"></span> Local workspace <span class="version">MVP / 01</span></div>
+    </aside>
+
+    <main id="overview">
+      <header class="topbar"><span>Workspace <span class="slash">/</span> <strong>Portfolio overview</strong></span><span class="read-only"><span aria-hidden="true">&#9671;</span> READ ONLY</span></header>
+      <div class="main-content">
+        <div class="page-heading"><div><div class="eyebrow">A CLEARER VIEW OF YOUR EXPOSURE</div><h1>Your portfolio, in perspective.</h1><p>Know what you hold. Understand where your risk sits.</p></div><button id="refresh" class="button secondary"><span aria-hidden="true">&#8635;</span> Refresh</button></div>
+        <section class="source-bar" aria-label="Data source"><div><span id="mode-badge" class="badge">CONNECTING</span><span id="source-description">Loading workspace configuration...</span></div><label id="price-control" hidden>Prices <select id="price-mode"><option value="live">Live Binance</option><option value="illustrative">Illustrative demo</option></select></label></section>
+        <div id="error" class="notice error" role="alert" hidden></div>
+        <div id="warning" class="notice" role="status" hidden></div>
+        <section class="metric-grid" aria-label="Portfolio summary">
+          <article class="metric"><span class="metric-label">Priced portfolio value <span aria-hidden="true">&#8599;</span></span><div class="metric-value"><span id="total">--</span><small>USDT</small></div><p id="valuation-note">Current valuation, not profit or performance</p></article>
+          <article class="metric"><span class="metric-label">Largest allocation <span aria-hidden="true">&#9673;</span></span><div class="metric-value"><span id="largest">--</span><small id="largest-asset"></small></div><p>Share of priced portfolio value</p></article>
+          <article class="metric"><span class="metric-label">Concentration alerts <span aria-hidden="true">&#9671;</span></span><div class="metric-value"><span id="alert-count">--</span><small id="alert-label">active</small></div><p id="limit-note">Above your 40% allocation limit</p></article>
+        </section>
+        <div class="content-grid">
+          <div class="portfolio-column">
+            <section class="panel" id="holdings">
+              <div class="panel-heading"><div><h2>Asset allocation</h2><p>A snapshot of your Spot holdings</p></div><span id="asset-count" class="subtle-badge">-- assets</span></div>
+              <div id="allocation-bar" class="allocation-bar" aria-label="Asset allocation visualization"></div>
+              <div class="table-scroll"><table><thead><tr><th>Asset</th><th>Balance</th><th>Price / USDT</th><th>Value / USDT</th><th>Weight</th></tr></thead><tbody id="holdings-body"><tr><td colspan="5" class="empty">Loading your portfolio...</td></tr></tbody></table></div>
+              <div class="panel-footer"><span id="updated">Waiting for data</span><span>Includes free + locked balances</span></div>
+            </section>
+            <section class="panel risk-panel" id="risk">
+              <div class="panel-heading"><div><div class="eyebrow">YOUR GUARDRAILS</div><h2>Concentration monitor</h2></div><span class="subtle-badge">In-app alerts</span></div>
+              <form id="risk-form" class="rule-form"><label for="threshold">Flag any asset above <span class="number-input"><input id="threshold" type="number" min="1" max="100" step="0.1" value="40" required><span>%</span></span> of priced value</label><button class="button secondary" type="submit">Save limit</button></form>
+              <p id="save-status" class="save-status" role="status">Limit saved in this browser. Checked every 60 seconds while open.</p>
+              <div id="alerts" aria-live="polite"><div class="empty">Alerts appear once a portfolio is available.</div></div>
+              <details class="methodology"><summary>How we calculate these metrics</summary><p>Balance = free + locked. Asset value = balance x direct asset/USDT ticker price. Weight = asset value / total priced value x 100. Alert comparisons use unrounded weights; displayed percentages are rounded. USDT is the quote unit, not a guarantee of USD parity.</p><p>Only assets with a direct USDT price are valued. Missing prices make totals and alerts partial. The concentration index is the sum of squared allocation fractions: nearer 1 means more concentrated. It is not a volatility measure, loss forecast, or investment recommendation.</p><p id="index-note">Concentration index: --</p></details>
+            </section>
+          </div>
+          <section class="panel copilot-panel" id="copilot">
+            <div class="panel-heading"><div class="copilot-title"><span class="copilot-icon" aria-hidden="true">&#10023;</span><div><h2>Portfolio copilot</h2><p>Your read-only second look</p></div></div><span class="status-dot"></span></div>
+            <div class="assistant-disclosure">DETERMINISTIC ASSISTANT <span>Not an LLM</span></div>
+            <div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Conversation"><article class="chat-message assistant"><span class="message-label">LOOKOUT</span><p>Let's make your exposure easier to understand. Ask about balances, allocation, concentration alerts, or a market price.</p><p class="muted">Generative AI is not configured. I use controlled read-only tools, not open-ended investment advice.</p></article></div>
+            <div class="suggestions"><button data-query="Show my allocation">Show my allocation <span>&#8599;</span></button><button data-query="What concentration alerts are active?">Check concentration alerts <span>&#8599;</span></button><button data-query="Price BTCUSDT">Bitcoin market price <span>&#8599;</span></button></div>
+            <form id="chat-form" class="chat-form"><label class="sr-only" for="chat-input">Ask a portfolio question</label><textarea id="chat-input" rows="2" maxlength="500" placeholder="Ask about your portfolio..." required></textarea><div><span>Read-only tools. No execution.</span><button id="send" class="send-button" type="submit" aria-label="Send message">&#8593;</button></div></form>
+          </section>
+        </div>
+        <footer class="page-footer"><span><strong>Clarity, not certainty.</strong> No trading, predictions, or investment promises.</span><span>Spot account only · Valued in USDT</span></footer>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
